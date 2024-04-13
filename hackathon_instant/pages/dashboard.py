@@ -1,9 +1,10 @@
 """The dashboard page."""
 
 from hackathon_instant.templates import template
+from hackathon_instant.components.sidebar import sidebar
+from hackathon_instant.components.sectionpanel import sectionpanel
 
 import reflex as rx
-
 
 @template(route="/dashboard", title="Dashboard")
 def dashboard() -> rx.Component:
@@ -12,11 +13,7 @@ def dashboard() -> rx.Component:
     Returns:
         The UI for the dashboard page.
     """
-    return rx.vstack(
-        rx.heading("Dashboard", size="8"),
-        rx.text("Welcome to Reflex!"),
-        rx.text(
-            "You can edit this page in ",
-            rx.code("{your_app}/pages/dashboard.py"),
-        ),
+    return rx.box(
+       sectionpanel(),
+       class_name="fixed right-0 top-0"
     )
