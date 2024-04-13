@@ -31,5 +31,6 @@ def sectionpanel() -> rx.Component:
       rx.heading("Attributes", size="5", class_name="py-2"),
     ),
     rx.text(SectionPanelState.section),
+    rx.button("Add Section"),
     class_name="border-l h-screen p-4 w-[300px]"
 )
