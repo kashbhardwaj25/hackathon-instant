@@ -33,7 +33,6 @@ def install_shopify_app(shop_name: str):
 
 
 def shopify_callback(code: str | None = None, shop: str | None = None, state: str | None = None, hmac: str | None = None, host: str | None = None, timestamp: int | None = None):
-
     if not code or not shop or not state:
         raise HTTPException(status_code=400, detail="Missing code, shop, or state parameter")
     
@@ -51,14 +50,6 @@ def shopify_callback(code: str | None = None, shop: str | None = None, state: st
     store_name = shop.split(".")[0]
     print("Access Token:", access_token)
     return {"message": "Shopify Auth Callback"}
-
-    # print(request_params)
-    # session = shopify.Session(shop, api_version)
-    # print("session:", session)
-    # access_token = session.request_token(request_params)
-    # print("Access Token:", access_token)
-    return {"message": "Shopify Auth Callback"}
-
 
 async def find_one_store(store_name: str):
     # Logic to find store data from the database
