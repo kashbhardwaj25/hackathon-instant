@@ -1,12 +1,6 @@
-from datetime import datetime
-from sqlmodel import Field
 from hackathon_instant.pages import *
-
 import reflex as rx
-
-from sqlalchemy import Column, DateTime
-
-from .shopify_service import install_shopify_app, shopify_callback
+from .models.store_data import install_shopify_app, shopify_callback
 
 class State(rx.State):
     """Define empty state to allow access to rx.State.router."""
