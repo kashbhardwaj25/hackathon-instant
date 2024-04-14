@@ -6,6 +6,8 @@ import reflex as rx
 import requests
 import http.cookies
 from fastapi import Cookie
+
+from hackathon_instant.utils.helpers import get_gpt_response
 from ..components.template import template as template_to_render
 
 from hackathon_instant.components.landingPage.header import header
@@ -22,6 +24,7 @@ from ..models.user import store_list
 from ..models.store_data import install_shopify_app as connect
 from ..cookie import CookieState
 from ..models.cookie import get_cookie_from_header
+
 
 
 import reflex as rx
@@ -192,6 +195,33 @@ class SectionPanelState(rx.State):
         redirect_url =await publish_page(arg["store_name"],self.finalHtml,handle.text)
         print(redirect_url,"<><><><><><><>")
         return rx.redirect(redirect_url)
+    async def finalise_html_with_ai(self):
+        print(self.sectionList)
+        for section in self.sectionList:
+            if section == "Header":
+                print("header adding.....")
+                self.finalHtml = self.finalHtml + navbar_html
+            elif section == "Carousel":
+                self.finalHtml = self.finalHtml + carousel
+            elif section == "Hero Section":
+                self.finalHtml = self.finalHtml + hero_html
+            elif section == "Contact Us":
+                self.finalHtml = self.finalHtml + contact_us_html
+            elif section == "Product Section":
+                self.finalHtml = self.finalHtml + product_section
+            elif section == "Feature Section":
+                self.finalHtml = self.finalHtml + feature_section
+            else:
+                self.finalHtml = self.finalHtml + ""
+        arg = self.router.page.params
+        print(arg)
+        handle = await self.get_state(TextfieldControlled)
+        response = await get_gpt_response(self.finalHtml,"cars")
+        html = response["choices"][0]["message"]["content"].split("\'\'\'")[0]
+        print(response["choices"][0]["message"]["content"].split("\'\'\'")[0],"<><><><><><>")
+        redirect_url =await publish_page(arg["store_name"],html,handle.text)
+        print(redirect_url,"<><><><><><><>")
+        return rx.redirect(redirect_url)
 
                 
 def list_item(section: str):
@@ -229,7 +259,7 @@ def dashboard() -> rx.Component:
                 rx.text(SectionPanelState.section),
                 rx.button("Remove Section", on_click=lambda: SectionPanelState.filter_list(SectionPanelState.section)),
                 rx.flex(rx.input(placeholder="Enter your route here",value=TextfieldControlled.text,on_change=TextfieldControlled.set_text,size="3"),
-                rx.button("Publish", on_click=(lambda: SectionPanelState.finalise_html)),direction="column",class_name="gap-4 w-full mt-10"),
+                rx.button("Publish", on_click=(lambda: SectionPanelState.finalise_html)),rx.button("Publish with AI", on_click=(lambda: SectionPanelState.finalise_html_with_ai)),direction="column",class_name="gap-4 w-full mt-10"),
                 class_name="border-l h-screen p-4 w-[300px] flex flex-col"
                 ),
                 class_name="fixed right-0 top-0",
@@ -365,4 +395,5 @@ app.api.add_api_route("/login", login_user, methods=["POST"])
 app.api.add_api_route("/shopify-connect", connect, methods=["POST"])
 app.api.add_api_route("/shopify-connect", get_cookie_from_header, methods=["POST"])
 app.api.add_api_route("/dashboard", get_cookie_from_header, methods=["POST"])
+app.api.add_api_route("/dashboard", get_gpt_response, methods=["POST"])
 app.api.add_api_route("/shopify-connect", store_list, methods=["GET"])
