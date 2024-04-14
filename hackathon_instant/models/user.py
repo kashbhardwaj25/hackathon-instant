@@ -11,6 +11,8 @@ import reflex as rx
 # Load environment variables
 from dotenv import load_dotenv
 
+from ..utils.helpers import get_current_user
+
 from .store_data import find_user_store
 load_dotenv()
 
@@ -69,26 +71,6 @@ def create_access_token(user_id: str):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt,expire
 
-def get_current_user(request: Request):
-    print(request)
-    token = request.cookies['jwt_key']
-    print(token,'token')
-    if not token:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id = payload.get("sub")
-        if user_id is None:
-            raise HTTPException(status_code=403, detail="Invalid authentication credentials")
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token has expired")
-    except jwt.JWTError:
-        raise HTTPException(status_code=403, detail="Invalid authentication token")
-    
-    return user_id
-
-
 async def login(payload: Login, response: Response):
     username, password = payload.username, payload.password
     user = await find_user(username)
@@ -111,10 +93,7 @@ async def login(payload: Login, response: Response):
 
 async def store_list(user_id: str = Depends(get_current_user)):
     stores = await find_user_store(user_id)
-    print(stores)
     return stores
-    
-    
     
 async def create_user(user_id: str, name: str, username: str, password: bool):
     with rx.session() as session:
@@ -129,9 +108,7 @@ async def find_user(username: str):
         result = session.exec(User.select().where(User.username == username))
         user =  result.first()
         return user
-    
-async def protected_endpoint(user_id: str = Depends(get_current_user)):
-    return {"message": "This is a protected endpoint", "user_id": user_id}
+
 
 
 

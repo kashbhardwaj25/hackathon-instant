@@ -1,4 +1,4 @@
-from .models.user import login, protected_endpoint, signup, store_list
+from .models.user import login, signup, store_list
 from fastapi.middleware.cors import CORSMiddleware
 from hackathon_instant.pages import *
 import reflex as rx
@@ -17,4 +17,3 @@ app.api.add_api_route("/publish-page/{store_name}", publish_page)
 app.api.add_api_route("/signup", signup, methods=["POST"])
 app.api.add_api_route("/login", login, methods=["POST"])
 app.api.add_api_route("/store-list", store_list)
-app.api.add_api_route("/protected-endpoint", protected_endpoint)

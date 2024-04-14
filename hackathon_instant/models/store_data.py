@@ -2,6 +2,7 @@ import binascii
 from http.client import HTTPException
 import os
 import uuid
+from fastapi import Depends
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 import requests
@@ -15,6 +16,9 @@ import reflex as rx
 
 # Load environment variables
 from dotenv import load_dotenv
+
+from ..utils.helpers import get_current_user
+
 load_dotenv()
 
 # Constants
@@ -38,14 +42,16 @@ class StoreData(rx.Model, table=True):
      created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False))
      updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False, onupdate=datetime.now))
 
-async def install_shopify_app(shop_name: str):
+async def install_shopify_app(shop_name: str, user_id: str = Depends(get_current_user)):
+    print(user_id)
+    print(shop_name)
     if not shop_name:
         raise HTTPException(status_code=400, detail="Shop parameter is missing")
     
     stores = await find_one_store(shop_name)
     
     if not stores:
-        await create_store(shop_name, is_app_install=False, access_token=None)
+        await create_store(shop_name, is_app_install=False, access_token=None, user_id=user_id)
         
     if stores and stores.is_app_install:
         raise HTTPException(status_code=400, detail="App already installed for this store")
@@ -89,16 +95,19 @@ async def shopify_callback(code: str | None = None, shop: str | None = None, sta
     
     return RedirectResponse(FE_URL)
 
-async def fetch_all_products(store_name):
+async def fetch_all_products(store_name, user_id: str = Depends(get_current_user)):
     store_data = await find_one_store(store_name)
 
     if not store_data or store_data.is_app_install == False:
         return "Store not found or app not installed"
+    
+    # Check if the user has permission to access the store
+    if store_data.user_id != user_id:
+        raise HTTPException(status_code=403, detail="You do not have permission to access this store")
 
     access_token = store_data.access_token
     shopify_api_url = f"https://{store_name}.myshopify.com/admin/api/2024-01/products.json"
 
-    # Use requests to fetch products from Shopify
     headers = {
         "X-Shopify-Access-Token": access_token,
     }
@@ -109,12 +118,16 @@ async def fetch_all_products(store_name):
     return products
 
 
-async def publish_page(store_name: str):
+async def publish_page(store_name: str, user_id: str = Depends(get_current_user)):
     # Retrieve store data from the database
     store_data = await find_one_store(store_name)
     
     if not store_data or not store_data.is_app_install:
         raise HTTPException(status_code=404, detail="Store not found or app not installed")
+    
+    # Check if the user has permission to access the store
+    if store_data.user_id != user_id:
+        raise HTTPException(status_code=403, detail="You do not have permission to access this store")
 
     # Setup Shopify session
     shopify.Session.setup(api_key=SHOPIFY_API_KEY, secret=SHOPIFY_API_SECRET)
@@ -151,9 +164,9 @@ async def find_one_store(store_name: str):
         store =  result.first()
         return store
 
-async def create_store(store_name: str, access_token: str, is_app_install: bool):
+async def create_store(store_name: str, access_token: str, is_app_install: bool, user_id: str):
     with rx.session() as session:
-        store = StoreData(store_name=store_name, access_token=access_token, is_app_install=is_app_install)
+        store = StoreData(store_name=store_name, access_token=access_token, is_app_install=is_app_install, user_id=user_id)
         session.add(store)
         session.commit()
         
