@@ -6,9 +6,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-def get_current_user(request: Request):
-    print(request)
-    token = request.cookies['jwt_key']
+def get_current_user(token:str):
+
     print(token,'token')
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
