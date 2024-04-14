@@ -4,6 +4,7 @@ from hackathon_instant.templates import template
 import reflex as rx
 import requests
 import http.cookies
+from ..components.template import template as template_to_render
 
 import reflex as rx
 
@@ -142,7 +143,4 @@ def add_token_to_cookies(token):
 
 @rx.page("/template")
 def template()-> rx.Component:
-    return rx.flex(
-        rx.text("Hello World"),
-        rx.button("Click Me")
-    )
+    return template_to_render()
