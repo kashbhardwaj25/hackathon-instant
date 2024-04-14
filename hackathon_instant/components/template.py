@@ -4,6 +4,7 @@ from .header import header
 from .crousel import crousel
 from .feature_section import feature_section
 from .hero_section import hero_section
+from .footer import footer
 
 def card()-> rx.Component:
     return rx.container(rx.image(src={"https://img0.junaroad.com/uiproducts/19126280/zoom_0-1673529652.jpg"}, width="700px",class_name={"p-3"}, height="auto"),rx.text("Mens Printed Casual Shirt",size="3",align="center",class_name="text-white"),
@@ -21,6 +22,7 @@ def template() -> rx.Component:
         crousel(),
         feature_section(),
         contact_us(),
+        footer(),
         direction="column",
     )
 

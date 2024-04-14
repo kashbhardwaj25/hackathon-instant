@@ -16,5 +16,5 @@ def crousel() -> rx.Component:
             card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),
             class_name={"w-full gap-8 overflow-x-scroll py-10"},
         ),
-        direction="column",justify="center",class_name="items-center",
+        direction="column",justify="center",class_name="items-center px-8 md:px-16 lg:px-28",
     )
