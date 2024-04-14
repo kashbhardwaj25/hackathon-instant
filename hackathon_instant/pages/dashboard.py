@@ -2,6 +2,14 @@
 
 from hackathon_instant.templates import template
 
+from hackathon_instant.components.landingPage.header import header
+from hackathon_instant.components.landingPage.hero_section import hero_section
+from hackathon_instant.components.landingPage.benefits import benefits
+from hackathon_instant.components.landingPage.team import team
+from hackathon_instant.components.landingPage.functions import functions
+from hackathon_instant.components.landingPage.start import start
+from hackathon_instant.components.landingPage.footer import footer
+
 import reflex as rx
 
 class SectionPanelState(rx.State):
@@ -37,3 +45,18 @@ def dashboard() -> rx.Component:
                 ),
                 class_name="fixed right-0 top-0"
     )
+
+@rx.page("/")
+def landing_page() -> rx.Component:
+
+   return rx.flex(
+                rx.flex(
+                    header(),
+                hero_section(),
+                class_name="h-[95vh] flex flex-col"),
+                benefits(),
+                team(),
+               functions(),
+              start(),
+              footer(),
+        class_name="flex flex-col font-mono")

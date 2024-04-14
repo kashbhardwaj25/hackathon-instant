@@ -5,8 +5,6 @@ from hackathon_instant.templates import template
 
 import reflex as rx
 
-
-@template(route="/", title="Home")
 def index() -> rx.Component:
     """The home page.
 
@@ -15,4 +13,5 @@ def index() -> rx.Component:
     """
     with open("README.md", encoding="utf-8") as readme:
         content = readme.read()
-    return rx.markdown(content, component_map=styles.markdown_style)
+
+    return rx.text("hi")
