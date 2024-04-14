@@ -140,7 +140,7 @@ def list_item(section: str):
     )
 
 
-@template(route="/dashboard", title="Dashboard")
+@template(route="/dashboard/[store_name]", title="Dashboard")
 def dashboard() -> rx.Component:
 
     return rx.hstack(
