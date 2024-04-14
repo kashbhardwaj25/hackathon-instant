@@ -124,6 +124,28 @@ product_section ="""
     </div>\n
 </div>\n
     """
+    
+feature_section="""
+<div style="display: flex; justify-content: center; align-items: center; padding: 40px; background-color: #f4f4f4;">\n
+    <div style="max-width: 1200px; width: 100%; display: flex; justify-content: space-around;">\n
+        <div style="background-color: white; width: 30%; text-align: center; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">\n
+            <img src="https://media.istockphoto.com/id/1136422297/photo/face-cream-serum-lotion-moisturizer-and-sea-salt-among-bamboo-leaves.jpg?s=1024x1024&w=is&k=20&c=hhRj5pB1_-VgLP9hDXnuuV1ioPWboTLS9lDEnj87GNQ=" alt="Feature 1" style="width: 100px; height: 100px; border-radius: 50%;">\n
+            <h3 style="color: #333; font-weight: bold; font-size: 18px">Innovative Design</h3>\n
+            <p style="color: #555;">Our products feature innovative designs that ensure functionality and style.</p>\n
+        </div>\n
+        <div style="background-color: white; width: 30%; text-align: center; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">\n
+            <img src="https://media.istockphoto.com/id/1987099112/photo/natural-spa-cosmetics-on-gray-textured-table.jpg?s=1024x1024&w=is&k=20&c=JUA8641a9G5YMyMmLZ8cg2OfAtCGC0nt_dzQ-G6J5sA=" alt="Feature 2" style="width: 100px; height: 100px; border-radius: 50%;">\n
+            <h3 style="color: #333; font-weight: bold; font-size: 18px">Quality Materials</h3>\n
+            <p style="color: #555;">We use only the highest quality materials to ensure the durability of our products.</p>\n
+        </div>\n
+        <div style="background-color: white; width: 30%; text-align: center; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">\n
+            <img src="https://media.istockphoto.com/id/1309359637/photo/natural-skin-care-products.jpg?s=1024x1024&w=is&k=20&c=TcUngAAsaYl9xI3koWmehn_Pm9Dj9CMla4w9XGwOTOo=" alt="Feature 3" style="width: 100px; height: 100px; border-radius: 50%;">\n
+            <h3 style="color: #333; font-weight: bold; font-size: 18px">Customer Satisfaction</h3>\n
+            <p style="color: #555;">We prioritize customer satisfaction above all, ensuring a seamless shopping experience.</p>\n
+        </div>\n
+    </div>\n
+</div>\n
+    """
 
 class SectionPanelState(rx.State):
     section: str = ''
@@ -154,6 +176,8 @@ class SectionPanelState(rx.State):
                 self.finalHtml = self.finalHtml + contact_us_html
             elif section == "Product Section":
                 self.finalHtml = self.finalHtml + product_section
+            elif section == "Feature Section":
+                self.finalHtml = self.finalHtml + feature_section
             else:
                 self.finalHtml = self.finalHtml + ""
                 
@@ -165,6 +189,7 @@ def list_item(section: str):
         ("Hero Section", rx.html(hero_html)),
         ("Contact Us", rx.html(contact_us_html)),
         ("Product Section", rx.html(product_section)),
+        ("Feature Section", rx.html(feature_section)),
         ("", rx.text("Section not found")),
     )
 
@@ -182,6 +207,7 @@ def dashboard() -> rx.Component:
                         rx.card("Hero Section", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Hero Section')),
                         rx.card("Contact Us", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Contact Us')),
                         rx.card("Product Section", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Product Section')),
+                        rx.card("Feature Section", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Feature Section')),
                         spacing="2",
                         width="100%",
                         direction="column",
