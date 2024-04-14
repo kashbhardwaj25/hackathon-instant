@@ -164,6 +164,7 @@ description_section= """
 
 class TextfieldControlled(rx.State):
     text: str = ""
+    category: str = ""
 
 class SectionPanelState(rx.State):
     section: str = ''
@@ -229,7 +230,7 @@ class SectionPanelState(rx.State):
         arg = self.router.page.params
         print(arg)
         handle = await self.get_state(TextfieldControlled)
-        response = await get_gpt_response(self.finalHtml,"cars")
+        response = await get_gpt_response(self.finalHtml,handle.category)
         html = response["choices"][0]["message"]["content"].split("\'\'\'")[0]
         print(response["choices"][0]["message"]["content"].split("\'\'\'")[0],"<><><><><><>")
         redirect_url =await publish_page(arg["store_name"],html,handle.text)
@@ -273,7 +274,7 @@ def dashboard() -> rx.Component:
                 ),
                 rx.text(SectionPanelState.section),
                 rx.button("Remove Section", on_click=lambda: SectionPanelState.filter_list(SectionPanelState.section)),
-                rx.flex(rx.input(placeholder="Enter your route here",value=TextfieldControlled.text,on_change=TextfieldControlled.set_text,size="3"),
+                rx.flex(rx.input(placeholder="Enter your route here",value=TextfieldControlled.text,on_change=TextfieldControlled.set_text,size="3"),rx.input(placeholder="Enter your category for AI here",value=TextfieldControlled.category,on_change=TextfieldControlled.set_category,size="3"),
                 rx.button("Publish", on_click=(lambda: SectionPanelState.finalise_html)),rx.button("Publish with AI", on_click=(lambda: SectionPanelState.finalise_html_with_ai)),direction="column",class_name="gap-4 w-full mt-10"),
                 class_name="border-l h-screen p-4 w-[300px] flex flex-col"
                 ),

@@ -31,7 +31,7 @@ def get_current_user(token:str):
 
 async def get_gpt_response(prompt:str,product:str):
 
-    final_call = prompt + "  " +f"here is the html string i want to you to change the whole text content and the colours of html for the hypothetical product of this category {product} and add hypothetical features by yourself i want you to give full html code with correct placement of /n dont chnage the structure and give me complete html code with changes only also change the images no text after html strictly make sure images work and are not broken but strictly dont change the html structure "
+    final_call = prompt + "  " +f"here is the html string change the whole text content and the colours of html for the hypothetical product of this category {product} and add some features by yourself so give full html code with correct placement of /n and give me complete html code with changes only give only html code no text strictly but strictly dont change the html structure just text, images and colours for whole html"
     url = "https://api.openai.com/v1/chat/completions"
     payload = json.dumps({
     "model": "gpt-3.5-turbo",
