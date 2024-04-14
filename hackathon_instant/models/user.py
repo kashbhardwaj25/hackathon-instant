@@ -1,6 +1,6 @@
 import os
 import uuid
-from fastapi import HTTPException, Request, Response
+from fastapi import Depends, HTTPException, Request, Response
 from pydantic import BaseModel
 import jwt
 from sqlalchemy import Column, DateTime
@@ -10,6 +10,8 @@ import reflex as rx
 
 # Load environment variables
 from dotenv import load_dotenv
+
+from .store_data import find_user_store
 load_dotenv()
 
 # Constants
@@ -68,24 +70,28 @@ def create_access_token(user_id: str):
     return encoded_jwt,expire
 
 def get_current_user(request: Request):
-    token = request.cookies.get("jwt_token")
+    print(request)
+    token = request.cookies['jwt_key']
+    print(token,'token')
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
+    
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("sub")
         if user_id is None:
-            raise HTTPException(status_code=401, detail="Invalid JWT token")
-    except jwt.PyJWTError as e:
-        raise HTTPException(status_code=401, detail="Invalid JWT token") from e
+            raise HTTPException(status_code=403, detail="Invalid authentication credentials")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
+    except jwt.JWTError:
+        raise HTTPException(status_code=403, detail="Invalid authentication token")
+    
     return user_id
 
 
 async def login(payload: Login, response: Response):
     username, password = payload.username, payload.password
     user = await find_user(username)
-    
-    print(user)
     
     if not user or user.password != password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
@@ -101,6 +107,13 @@ async def login(payload: Login, response: Response):
         )
     
     return {"message": "Logged in successfully", "access_token": access_token, "token_type": "bearer"}
+
+
+async def store_list(user_id: str = Depends(get_current_user)):
+    stores = await find_user_store(user_id)
+    print(stores)
+    return stores
+    
     
     
 async def create_user(user_id: str, name: str, username: str, password: bool):
@@ -117,7 +130,7 @@ async def find_user(username: str):
         user =  result.first()
         return user
     
-async def protected_endpoint(user_id: str):
+async def protected_endpoint(user_id: str = Depends(get_current_user)):
     return {"message": "This is a protected endpoint", "user_id": user_id}
 
 

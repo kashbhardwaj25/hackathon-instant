@@ -32,7 +32,8 @@ class PageData(BaseModel):
 class StoreData(rx.Model, table=True):
      id: str = Field(primary_key = True, nullable = False, unique = True, default=uuid.uuid4())
      store_name: str = Field(nullable=False, unique = True)
-     access_token: str = Field(nullable=True)    
+     access_token: str = Field(nullable=True)
+     user_id: str = Field(nullable=True)
      is_app_install: bool = Field(nullable=False, default=False)
      created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False))
      updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False, onupdate=datetime.now))
@@ -163,3 +164,9 @@ async def update_store(store_name: str, is_app_install: bool, access_token: str)
         store.is_app_install = is_app_install
         store.access_token = access_token
         session.commit()
+        
+async def find_user_store(user_id: str):
+    with rx.session() as session:
+        result = session.exec(StoreData.select().where(StoreData.user_id == user_id))
+        store =  result.all()
+        return store
