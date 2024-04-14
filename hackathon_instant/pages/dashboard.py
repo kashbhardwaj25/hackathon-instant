@@ -110,6 +110,7 @@ contact_us_html = """
 class SectionPanelState(rx.State):
     section: str = ''
     sectionList: list = []
+    finalHtml: str = ''
 
     def set_section(self, selectedSection):
         self.section = selectedSection
@@ -123,6 +124,19 @@ class SectionPanelState(rx.State):
         self.sectionList = [item for item in self.sectionList if filter_term not in item]
         self.section = ''
         
+    def finalise_html(self):
+        for section in self.sectionList:
+            if section == "Header":
+                self.finalHtml == self.finalHtml + navbar_html
+            elif section == "Carousel":
+                self.finalHtml == self.finalHtml + carousel
+            elif section == "Hero Section":
+                self.finalHtml == self.finalHtml + hero_html
+            elif section == "Contact Us":
+                self.finalHtml = self.finalHtml + contact_us_html
+            else:
+                self.finalHtml = self.finalHtml + ""
+                
 def list_item(section: str):
    return rx.match(
         section,
