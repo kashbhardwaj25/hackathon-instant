@@ -4,7 +4,6 @@ from hackathon_instant import styles
 
 import reflex as rx
 
-
 def sidebar_header() -> rx.Component:
     """Sidebar header.
 
