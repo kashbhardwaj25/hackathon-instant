@@ -34,7 +34,7 @@ class PageData(BaseModel):
     page_id: int = None
 
 class StoreData(rx.Model, table=True):
-     id: str = Field(primary_key = True, nullable = False, unique = True, default=uuid.uuid4())
+     id: str = Field(primary_key = True, default=None)
      store_name: str = Field(nullable=False, unique = True)
      access_token: str = Field(nullable=True)
      user_id: str = Field(nullable=True)
@@ -51,7 +51,8 @@ async def install_shopify_app(shop_name: str, user_id: str = Depends(get_current
     stores = await find_one_store(shop_name)
     
     if not stores:
-        await create_store(shop_name, is_app_install=False, access_token=None, user_id=user_id)
+        store_id = str(uuid.uuid4())
+        await create_store(store_id, shop_name, is_app_install=False, access_token=None, user_id=user_id)
         
     if stores and stores.is_app_install:
         raise HTTPException(status_code=400, detail="App already installed for this store")
@@ -164,9 +165,9 @@ async def find_one_store(store_name: str):
         store =  result.first()
         return store
 
-async def create_store(store_name: str, access_token: str, is_app_install: bool, user_id: str):
+async def create_store(id: str, store_name: str, access_token: str, is_app_install: bool, user_id: str):
     with rx.session() as session:
-        store = StoreData(store_name=store_name, access_token=access_token, is_app_install=is_app_install, user_id=user_id)
+        store = StoreData(id=id, store_name=store_name, access_token=access_token, is_app_install=is_app_install, user_id=user_id)
         session.add(store)
         session.commit()
         
