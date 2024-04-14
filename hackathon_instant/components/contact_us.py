@@ -12,13 +12,13 @@ def contact_us() -> rx.Component:
                     rx.input(placeholder="Email",size="3"),
                     rx.flex(
                         rx.button("Submit",size="4",class_name="w-full", color_scheme="ruby"),class_name="pt-12 w-full"),   
-                    direction="column",class_name="gap-6 max-w-[480px]"),
+                    direction="column",class_name="gap-6 max-w-[480px] text-center md:text-left"),
                 rx.box(
-                    rx.image(src={"https://img0.junaroad.com/uiproducts/19126280/zoom_0-1673529652.jpg"},width="380px",height="460px"),
+                    rx.image(src={"https://img0.junaroad.com/uiproducts/19126280/zoom_0-1673529652.jpg"},width="380px",height="460px",class_name="hidden md:flex"),
                     ),
                     direction="row-reverse",
                     justify="between",
-                    class_name={"gap-28 items-center w-full"}
+                    class_name={"md:gap-28 items-center w-full"}
                 ),
                 direction="column",
                 class_name="gap-28"),

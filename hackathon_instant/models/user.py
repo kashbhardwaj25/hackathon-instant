@@ -21,15 +21,6 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-class Signup(BaseModel):
-    name: str
-    username: str
-    password: str
-
-class Login(BaseModel):
-    username: str
-    password: str
-
 class User(rx.Model, table=True):
     id: str = Field(primary_key = True, default=None)
     username: str = Field(unique=True, nullable=False)
@@ -39,8 +30,7 @@ class User(rx.Model, table=True):
     updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False, onupdate=datetime.now))
     
 
-async def signup(payload: Signup, response: Response):
-    name, username, password = payload.name, payload.username, payload.password
+async def signup(name:str, username:str,password:str):
     
     user_id = str(uuid.uuid4())
     new_user = await create_user(user_id, name, username, password)
@@ -48,15 +38,9 @@ async def signup(payload: Signup, response: Response):
     if new_user:
         access_token = create_access_token(new_user.id)
         
-        response.set_cookie(
-            key="jwt_token", 
-            value=access_token,
-            max_age=3600,
-            httponly=True,
-            path='/'
-        )
-        
         return {
+            "status": "success",
+            "status_code": "200",
             "message": "User created successfully",
             "user_id": new_user.id,
             "access_token": access_token,
@@ -71,24 +55,16 @@ def create_access_token(user_id: str):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt,expire
 
-async def login(payload: Login, response: Response):
-    username, password = payload.username, payload.password
+async def login(username: str,password: str):
     user = await find_user(username)
     
     if not user or user.password != password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     
     access_token = create_access_token(user.id)
+
     
-    response.set_cookie(
-            key="jwt_token", 
-            value=access_token,
-            max_age=3600,
-            httponly=True,
-            path='/'
-        )
-    
-    return {"message": "Logged in successfully", "access_token": access_token, "token_type": "bearer"}
+    return {"message": "Logged in successfully", "access_token": access_token, "token_type": "bearer","status_code": 200}
 
 
 async def store_list(user_id: str = Depends(get_current_user)):
