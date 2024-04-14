@@ -1,7 +1,4 @@
 import reflex as rx
-class State(rx.State):
-    """The app state."""
-
 
 def card()-> rx.Component:
     return rx.container(rx.image(src={"https://img0.junaroad.com/uiproducts/19126280/zoom_0-1673529652.jpg"}, width="700px",class_name={"p-3"}, height="auto"),rx.text("Mens Printed Casual Shirt",size="3",align="center",class_name="text-white"),
@@ -12,7 +9,7 @@ def card()-> rx.Component:
                              rx.text("XL",class_name="text-[#F0E7D8] opacity-40 hover:opacity-100"),justify="center",class_name="gap-6 text-sm"),class_name={"bg-[#001B2E] drop-shadow-lg cursor-pointer max-w-[250px] rounded-xl w-full h-[380px]"})
 
 
-def index() -> rx.Component:
+def template() -> rx.Component:
     return rx.flex(
     rx.flex(
         rx.avatar(variant="solid", color_scheme="ruby"),
@@ -101,8 +98,4 @@ def index() -> rx.Component:
         class_name={"px-32 py-8 w-full bg-[#F0E7D8] gap-10 text-[#1F1300]"}),
     direction="column",
     )
-    
 
-
-app = rx.App()
-app.add_page(index)

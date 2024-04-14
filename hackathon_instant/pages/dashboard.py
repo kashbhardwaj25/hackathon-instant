@@ -57,7 +57,7 @@ class FormInputState(rx.State):
         make_login_api_call(self.form_data["username"], self.form_data["password"])
 
 
-rx.page("/login")
+@rx.page("/login")
 def login() -> rx.Component:
 
     return rx.flex(
@@ -95,7 +95,7 @@ def make_login_api_call(username: str, password: str):
     except requests.RequestException as e:
         print("An error occurred:", e)
 
-rx.page("/signup")
+@rx.page("/signup")
 def signup() -> rx.Component:
     return rx.flex(
         rx.text("Getting Started", size="7", class_name="font-semibold"),
@@ -139,3 +139,10 @@ def add_token_to_cookies(token):
     cookie["auth_token"]["path"] = "/"
     cookie["auth_token"]["httponly"] = True
     print("Cookie set:", cookie.output())
+
+@rx.page("/template")
+def template()-> rx.Component:
+    return rx.flex(
+        rx.text("Hello World"),
+        rx.button("Click Me")
+    )
