@@ -1,6 +1,5 @@
 import reflex as rx
 from .contact_us import contact_us
-from .header import header
 from .crousel import crousel
 from .feature_section import feature_section
 from .hero_section import hero_section
@@ -17,7 +16,6 @@ def card()-> rx.Component:
 
 def template() -> rx.Component:
     return rx.flex(
-        header(),
         hero_section(),
         crousel(),
         feature_section(),

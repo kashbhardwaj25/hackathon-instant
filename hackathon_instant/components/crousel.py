@@ -1,20 +1,50 @@
 import reflex as rx
 
-def card()-> rx.Component:
-    return rx.container(rx.image(src={"https://img0.junaroad.com/uiproducts/19126280/zoom_0-1673529652.jpg"}, width="700px",class_name={"p-3"}, height="auto"),rx.text("Mens Printed Casual Shirt",size="3",align="center",class_name="text-white"),
-                         rx.flex(
-                             rx.text("S",class_name="text-[#F0E7D8] opacity-40 hover:opacity-100"),
-                             rx.text("M",class_name="text-[#F0E7D8] opacity-40 hover:opacity-100"),
-                             rx.text("L",class_name="text-[#F0E7D8] opacity-40 hover:opacity-100"),
-                             rx.text("XL",class_name="text-[#F0E7D8] opacity-40 hover:opacity-100"),justify="center",class_name="gap-6 text-sm"),class_name={"bg-[#001B2E] drop-shadow-lg cursor-pointer max-w-[250px] rounded-xl w-full h-[380px]"})
+carousel="""
+<div style="overflow-x: auto; white-space: nowrap; padding: 20px; background-color: #f4f4f4; width: 1000px;">
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 1</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 2</h3>
+        <p style="color: #555; font-size: 14px;">Name.</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 3</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 4</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 5</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 6</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 7</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 8</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+</div>
+"""
 
-def crousel() -> rx.Component:
-    return rx.flex(
-        rx.box(class_name="w-[400px] border-t-2 border-[#1F1300] my-12 bg-[#001B2E]"),
-        rx.text("Feel free to explore our Products",align="center",size="7",class_name={"font-semibold pb-4 text-[#1F1300]"}),
-        rx.flex(
-            card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),card(),
-            class_name={"w-full gap-8 overflow-x-scroll py-10"},
-        ),
-        direction="column",justify="center",class_name="items-center px-8 md:px-16 lg:px-28",
-    )
+
+def crousel()-> rx.Component:
+    return rx.html(carousel)
