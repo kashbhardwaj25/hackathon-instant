@@ -3,6 +3,7 @@ from http.client import HTTPException
 import os
 import uuid
 from fastapi.responses import RedirectResponse
+from pydantic import BaseModel
 import requests
 import shopify
 import urllib.parse
@@ -11,6 +12,12 @@ from sqlalchemy import Column, DateTime
 from datetime import datetime
 from sqlmodel import Field
 import reflex as rx
+
+class PageData(BaseModel):
+    shop_name: str
+    title: str
+    body_html: str
+    page_id: int = None  # Optional: Include if updating an existing page
 
 class StoreData(rx.Model, table=True):
      id: str = Field(primary_key = True, nullable = False, unique = True, default=uuid.uuid4())
@@ -37,10 +44,10 @@ async def install_shopify_app(shop_name: str):
     
     shopify.Session.setup(api_key=shopify_api_key, secret=shopify_api_secret)    
     shop_url = "quickstart-4cb07f3a.myshopify.com"
-    api_version = '2024-01'
+    api_version = '2023-10'
     state = binascii.b2a_hex(os.urandom(15)).decode("utf-8")
-    redirect_uri = "https://6d64-112-196-47-10.ngrok-free.app/auth/shopify/callback"
-    scopes = ['read_products', 'read_orders']
+    redirect_uri = "https://d11b-112-196-47-10.ngrok-free.app/auth/shopify/callback"
+    scopes = ['read_products', 'write_products', 'read_orders', 'write_content', 'read_content']
 
     newSession = shopify.Session(shop_url, api_version)
     auth_url = newSession.create_permission_url(scopes, redirect_uri, state)
@@ -73,6 +80,61 @@ async def shopify_callback(code: str | None = None, shop: str | None = None, sta
     await update_store(store_name, is_app_install=True, access_token=access_token)
     
     return {"message": "Shopify Auth Callback"}
+
+async def fetch_all_products(store_name):
+    store_data = await find_one_store(store_name)
+
+    if not store_data or store_data.is_app_install == False:
+        return "Store not found or app not installed"
+
+    access_token = store_data.access_token
+    shopify_api_url = f"https://{store_name}.myshopify.com/admin/api/2024-01/products.json"
+
+    # Use requests to fetch products from Shopify
+    headers = {
+        "X-Shopify-Access-Token": access_token,
+    }
+
+    response = requests.get(shopify_api_url, headers=headers)
+    products = response.json()['products']
+
+    return products
+
+
+async def publish_page(store_name: str):
+    print("store_name: ", store_name)
+    # Retrieve store data from the database
+    store_data = await find_one_store(store_name)
+    if not store_data or not store_data.is_app_install:
+        raise HTTPException(status_code=404, detail="Store not found or app not installed")
+
+    # Setup Shopify session
+    shopify.Session.setup(api_key=shopify_api_key, secret=shopify_api_secret)
+    session = shopify.Session(f"{store_name}.myshopify.com", "2024-01", store_data.access_token)
+    shopify.ShopifyResource.activate_session(session)
+
+    # Create or update Shopify page
+    # if page_data.page_id:
+    #     page = shopify.Page.find(page_data.page_id)
+    #     if not page:
+    #         raise HTTPException(status_code=404, detail="Page not found")
+    # else:
+    #     page = shopify.Page()
+        
+    page = shopify.Page()
+
+    page.title = "Amit Bishnoi Custom Page"
+    page.body_html = "<h2>Bhaiyon Publish Hogya</h2>\n<p>Revert in Slack Group If you want to congratulate us <strong>Within 15 minutes and this is strong tag of html</strong>.</p>"
+    page.handle = "amit-page"
+    success = page.save() 
+
+    shopify.ShopifyResource.clear_session()
+
+    if success:
+        page_url = f"https://{store_name}.myshopify.com/pages/{page.handle}"
+        return RedirectResponse(page_url)
+    else:
+        raise HTTPException(status_code=500, detail="Failed to publish page")
 
 async def find_one_store(store_name: str):
     with rx.session() as session:
