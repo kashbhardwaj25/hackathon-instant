@@ -21,9 +21,22 @@ import reflex as rx
 
 class SectionPanelState(rx.State):
     section: str = ''
+    sectionList: list = []
 
     def set_section(self, selectedSection):
         self.section = selectedSection
+        self.add_in_list(selectedSection)  # Adding directly when section is set.
+
+    def add_in_list(self, selectedSection):
+        if selectedSection not in self.sectionList:  # Check to avoid duplicates.
+            self.sectionList.append(selectedSection)
+
+    def filter_list(self, filter_term: str):
+        self.sectionList = [item for item in self.sectionList if filter_term not in item]
+        self.section = ''
+        
+def list_item(section: str):
+        return rx.box(rx.text(section))
 
 
 @template(route="/dashboard", title="Dashboard")
@@ -33,7 +46,8 @@ def dashboard() -> rx.Component:
     Returns:
         The UI for the dashboard page.
     """
-    return rx.box(
+    return rx.hstack(
+        rx.box(
        rx.vstack(
                 rx.heading("Sections", size="5", class_name="py-2"),
                 rx.flex(
@@ -47,10 +61,14 @@ def dashboard() -> rx.Component:
                         direction="column"
                 ),
                 rx.text(SectionPanelState.section),
-                rx.button("Add Section"),
+                rx.button("Remove Section", on_click=lambda: SectionPanelState.filter_list(SectionPanelState.section)),
                 class_name="border-l h-screen p-4 w-[300px]"
                 ),
-                class_name="fixed right-0 top-0"
+                class_name="fixed right-0 top-0",
+    ),
+    rx.vstack(
+        rx.foreach(SectionPanelState.sectionList, list_item),
+    )
     )
 
 
