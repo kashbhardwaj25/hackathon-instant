@@ -146,6 +146,17 @@ feature_section="""
     </div>\n
 </div>\n
     """
+    
+description_section= """
+<div style="background-color: #f0f0f0; padding: 40px; text-align: center;">\n
+    <h1 style="color: #420D09; margin-bottom: 20px; font-size: 32px; font-weight: bold">Welcome to Our Store!</h1>\n
+    <div style="max-width: 600px; margin: 0 auto; font-size: 18px; color: #333; line-height: 1.6; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">\n
+        <p>\n
+            At our store, we are committed to providing you with exceptional products and services. Our collection features a wide range of items tailored to meet your needs, whether you're looking for the latest in technology, stylish fashion pieces, or unique home decor. We pride ourselves on our commitment to quality and customer satisfaction. Visit us today and discover what makes us a preferred shopping destination for many!
+        </p>\n
+    </div>\n
+</div>\n
+"""
 
 class SectionPanelState(rx.State):
     section: str = ''
@@ -178,6 +189,8 @@ class SectionPanelState(rx.State):
                 self.finalHtml = self.finalHtml + product_section
             elif section == "Feature Section":
                 self.finalHtml = self.finalHtml + feature_section
+            elif section == "Description Section":
+                self.finalHtml = self.finalHtml + description_section
             else:
                 self.finalHtml = self.finalHtml + ""
                 
@@ -190,6 +203,7 @@ def list_item(section: str):
         ("Contact Us", rx.html(contact_us_html)),
         ("Product Section", rx.html(product_section)),
         ("Feature Section", rx.html(feature_section)),
+        ("Description Section", rx.html(description_section)),
         ("", rx.text("Section not found")),
     )
 
@@ -208,6 +222,7 @@ def dashboard() -> rx.Component:
                         rx.card("Contact Us", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Contact Us')),
                         rx.card("Product Section", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Product Section')),
                         rx.card("Feature Section", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Feature Section')),
+                        rx.card("Description Section", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Description Section')),
                         spacing="2",
                         width="100%",
                         direction="column",
