@@ -114,16 +114,16 @@ contact_us_html = """
 """
 
 product_section ="""
-<div style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f4;">
-    <div style="background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden; display: flex; max-width: 800px; width: 100%;">
-        <img src="https://images.pexels.com/photos/1002638/pexels-photo-1002638.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Ad Image" style="width: 50%; object-fit: cover;">
-        <div style="padding: 20px; width: 50%; display: flex; flex-direction: column; justify-content: center;">
-            <h2 style="color: #333; margin: 0 0 20px 0;">Discover Our New Collection</h2>
-            <p style="color: #555; margin: 0 0 20px 0;">Check out our latest range of products and take advantage of our limited-time offers now!</p>
-            <button style="padding: 10px 20px; background-color: #0044cc; color: white; border: none; border-radius: 5px; cursor: pointer;">Shop Now</button>
-        </div>
-    </div>
-</div>
+<div style="display: flex; justify-content: center; align-items: center; height: 40vh; background-color: #f4f4f4; width: 100%">\n
+    <div style="background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden; display: flex; max-width: 800px; width: 100%;">\n
+        <img src="https://images.pexels.com/photos/1002638/pexels-photo-1002638.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Ad Image" style="width: 50%; object-fit: cover;">\n
+        <div style="padding: 20px; width: 50%; display: flex; flex-direction: column; justify-content: center;">\n
+            <h2 style="color: #333; margin: 0 0 20px 0;">Discover Our New Collection</h2>\n
+            <p style="color: #555; margin: 0 0 20px 0;">Check out our latest range of products and take advantage of our limited-time offers now!</p>\n
+            <button style="padding: 10px 20px; background-color: #420D09; color: white; border: none; border-radius: 5px; cursor: pointer;">Shop Now</button>\n
+        </div>\n
+    </div>\n
+</div>\n
     """
 
 class TextfieldControlled(rx.State):
@@ -158,6 +158,8 @@ class SectionPanelState(rx.State):
                 self.finalHtml = self.finalHtml + hero_html
             elif section == "Contact Us":
                 self.finalHtml = self.finalHtml + contact_us_html
+            elif section == "Product Section":
+                self.finalHtml = self.finalHtml + product_section
             else:
                 self.finalHtml = self.finalHtml + ""
         arg = self.router.page.params
@@ -175,6 +177,7 @@ def list_item(section: str):
         ("Carousel", rx.html(carousel)),
         ("Hero Section", rx.html(hero_html)),
         ("Contact Us", rx.html(contact_us_html)),
+        ("Product Section", rx.html(product_section)),
         ("", rx.text("Section not found")),
     )
 
@@ -191,6 +194,7 @@ def dashboard() -> rx.Component:
                         rx.card("Carousel", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Carousel')),
                         rx.card("Hero Section", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Hero Section')),
                         rx.card("Contact Us", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Contact Us')),
+                        rx.card("Product Section", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Product Section')),
                         spacing="2",
                         width="100%",
                         direction="column",
