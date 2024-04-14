@@ -79,7 +79,7 @@ navbar_html = """
 </div>
 """
 
-featured_html = """
+hero_html = """
 <div class="hero" style="width: 1000px; background-image: url('https://images.pexels.com/photos/2563597/pexels-photo-2563597.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); height: 100vh; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white;">
   <h1>Welcome to Our World</h1>
   <p>Explore the beauty of nature with us.</p>
@@ -128,7 +128,7 @@ def list_item(section: str):
         section,
         ("Header", rx.html(navbar_html)),
         ("Carousel", rx.html(carousel)),
-        ("Featured Product", rx.html(featured_html)),
+        ("Hero Section", rx.html(hero_html)),
         ("Contact Us", rx.html(contact_us_html)),
         # ("Footer", footer()),
         ("", rx.text("Section not found")),
@@ -149,7 +149,7 @@ def dashboard() -> rx.Component:
                 rx.flex(
                         rx.card("Header", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Header'),),
                         rx.card("Carousel", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Carousel')),
-                        rx.card("Hero Section", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Featured Product')),
+                        rx.card("Hero Section", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Hero Section')),
                         rx.card("Contact Us", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Contact Us')),
                         spacing="2",
                         width="100%",
