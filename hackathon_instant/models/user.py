@@ -7,6 +7,7 @@ from sqlalchemy import Column, DateTime
 from datetime import datetime, timedelta
 from sqlmodel import Field
 import reflex as rx
+import bcrypt
 
 # Load environment variables
 from dotenv import load_dotenv
@@ -31,23 +32,26 @@ class User(rx.Model, table=True):
     
 
 async def signup(name:str, username:str,password:str):
-    
-    user_id = str(uuid.uuid4())
-    new_user = await create_user(user_id, name, username, password)
-    
-    if new_user:
-        access_token = create_access_token(new_user.id)
+    try:
+        user_id = str(uuid.uuid4())
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        new_user = await create_user(user_id, name, username, hashed_password.decode('utf-8'))
         
-        return {
-            "status": "success",
-            "status_code": "200",
-            "message": "User created successfully",
-            "user_id": new_user.id,
-            "access_token": access_token,
-            "token_type": "bearer"
-        }
-    else:
-        raise HTTPException(status_code=400, detail="User could not be created")
+        if new_user:
+            access_token = create_access_token(new_user.id)
+            
+            return {
+                "status": "success",
+                "status_code": "200",
+                "message": "User created successfully",
+                "user_id": new_user.id,
+                "access_token": access_token,
+                "token_type": "bearer"
+            }
+        else:
+            raise HTTPException(status_code=400, detail="User could not be created")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 def create_access_token(user_id: str):
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -56,15 +60,20 @@ def create_access_token(user_id: str):
     return encoded_jwt,expire
 
 async def login(username: str,password: str):
-    user = await find_user(username)
-    
-    if not user or user.password != password:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-    
-    access_token = create_access_token(user.id)
-
-    
-    return {"message": "Logged in successfully", "access_token": access_token, "token_type": "bearer","status_code": 200}
+    try: 
+        user = await find_user(username)
+        
+        if not user:
+            raise HTTPException(status_code=400, detail="User Not Found")
+        
+        if not bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+            raise HTTPException(status_code=400, detail="Incorrect password")
+        
+        access_token = create_access_token(user.id)
+        
+        return {"message": "Logged in successfully", "access_token": access_token, "token_type": "bearer","status_code": 200}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
 async def store_list(token:str):
