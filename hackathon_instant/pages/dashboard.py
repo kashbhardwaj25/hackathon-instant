@@ -95,7 +95,7 @@ hero_html = """
 
 contact_us_html = """
 <div style="display: flex; align-items: center; justify-content: center; padding: 80px; width: 100%; gap:80px">\n
-  <div style="flex: 1; min-height: 300px; background-image: url('https://images.pexels.com/photos/207456/pexels-photo-207456.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); background-size: cover; background-position: center;"></div>\n
+  <img src="https://images.pexels.com/photos/2563597/pexels-photo-2563597.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Ad Image" style="width: 50%; object-fit: cover;">\n
   <div style="flex: 1; padding: 20px;">\n
     <form action="submit-your-form-handler" method="POST" style="display: flex; flex-direction: column; gap: 10px;">\n
       <label for="name" style="color: #333; font-weight: bold;">Name:</label>\n
