@@ -17,6 +17,7 @@ from hackathon_instant.components.landingPage.start import start
 from hackathon_instant.components.landingPage.footer import footer
 from ..models.user import signup as register
 from ..models.user import login as login_user
+from ..models.store_data import publish_page
 from ..models.user import store_list 
 from ..models.store_data import install_shopify_app as connect
 from ..cookie import CookieState
@@ -112,6 +113,10 @@ contact_us_html = """
 </div>\n
 """
 
+class TextfieldControlled(rx.State):
+    text: str = ""
+
+
 class SectionPanelState(rx.State):
     section: str = ''
     sectionList: list = []
@@ -129,18 +134,27 @@ class SectionPanelState(rx.State):
         self.sectionList = [item for item in self.sectionList if filter_term not in item]
         self.section = ''
         
-    def finalise_html(self):
+    async def finalise_html(self):
+        print(self.sectionList)
         for section in self.sectionList:
             if section == "Header":
-                self.finalHtml == self.finalHtml + navbar_html
+                print("header adding.....")
+                self.finalHtml = self.finalHtml + navbar_html
             elif section == "Carousel":
-                self.finalHtml == self.finalHtml + carousel
+                self.finalHtml = self.finalHtml + carousel
             elif section == "Hero Section":
-                self.finalHtml == self.finalHtml + hero_html
+                self.finalHtml = self.finalHtml + hero_html
             elif section == "Contact Us":
                 self.finalHtml = self.finalHtml + contact_us_html
             else:
                 self.finalHtml = self.finalHtml + ""
+        arg = self.router.page.params
+        print(arg)
+        handle = await self.get_state(TextfieldControlled)
+        redirect_url =await publish_page(arg["store_name"],self.finalHtml,handle.text)
+        print(redirect_url,"<><><><><><><>")
+        return rx.redirect(redirect_url)
+
                 
 def list_item(section: str):
    return rx.match(
@@ -171,6 +185,8 @@ def dashboard() -> rx.Component:
                 ),
                 rx.text(SectionPanelState.section),
                 rx.button("Remove Section", on_click=lambda: SectionPanelState.filter_list(SectionPanelState.section)),
+                rx.flex(rx.input(placeholder="Enter your route here",value=TextfieldControlled.text,on_change=TextfieldControlled.set_text,size="3"),
+                rx.button("Publish", on_click=(lambda: SectionPanelState.finalise_html)),direction="column",class_name="gap-4 w-full mt-10"),
                 class_name="border-l h-screen p-4 w-[300px]"
                 ),
                 class_name="fixed right-0 top-0",
@@ -304,4 +320,5 @@ app.api.add_api_route("/signup", register, methods=["POST"])
 app.api.add_api_route("/login", login_user, methods=["POST"])
 app.api.add_api_route("/shopify-connect", connect, methods=["POST"])
 app.api.add_api_route("/shopify-connect", get_cookie_from_header, methods=["POST"])
+app.api.add_api_route("/dashboard", get_cookie_from_header, methods=["POST"])
 app.api.add_api_route("/shopify-connect", store_list, methods=["GET"])
