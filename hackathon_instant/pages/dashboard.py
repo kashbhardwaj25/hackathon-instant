@@ -312,6 +312,11 @@ def login() -> rx.Component:
         ),
         rx.button("Login",type="submit", size="4", color_scheme="violet", class_name="max-w-[400px] w-full"),on_submit=FormInputState.handle_login,
             reset_on_submit=True,class_name="max-w-[400px] w-full"),
+        rx.link(
+        "Click here to create a new account",
+        href="/signup",
+        color_scheme="violet"
+        ),
         direction="column",
         justify="center",
         class_name="w-screen h-screen gap-10 items-center"
@@ -332,6 +337,11 @@ def signup() -> rx.Component:
         ),
         rx.button("Sign Up",type="submit", size="4", color_scheme="violet", class_name="max-w-[400px] w-full"),on_submit=FormInputState.handle_signup,
             reset_on_submit=True,class_name="max-w-[400px] w-full"),
+        rx.link(
+        "Already have an account? Login here",
+        href="/login",
+        color_scheme="violet"
+        ),
         direction="column",
         justify="center",
         class_name="w-screen h-screen gap-10 items-center"
