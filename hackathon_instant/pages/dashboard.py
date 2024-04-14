@@ -17,6 +17,7 @@ from hackathon_instant.components.landingPage.start import start
 from hackathon_instant.components.landingPage.footer import footer
 from ..models.user import signup as register
 from ..models.user import login as login_user
+from ..models.store_data import publish_page
 from ..models.user import store_list 
 from ..models.store_data import install_shopify_app as connect
 from ..cookie import CookieState
@@ -94,7 +95,7 @@ hero_html = """
 
 contact_us_html = """
 <div style="display: flex; align-items: center; justify-content: center; padding: 80px; width: 100%; gap:80px">\n
-  <div style="flex: 1; min-height: 300px; background-image: url('https://images.pexels.com/photos/207456/pexels-photo-207456.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); background-size: cover; background-position: center;"></div>\n
+  <img src="https://images.pexels.com/photos/2563597/pexels-photo-2563597.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Ad Image" style="width: 50%; object-fit: cover;">\n
   <div style="flex: 1; padding: 20px;">\n
     <form action="submit-your-form-handler" method="POST" style="display: flex; flex-direction: column; gap: 10px;">\n
       <label for="name" style="color: #333; font-weight: bold;">Name:</label>\n
@@ -158,6 +159,9 @@ description_section= """
 </div>\n
 """
 
+class TextfieldControlled(rx.State):
+    text: str = ""
+
 class SectionPanelState(rx.State):
     section: str = ''
     sectionList: list = []
@@ -175,14 +179,16 @@ class SectionPanelState(rx.State):
         self.sectionList = [item for item in self.sectionList if filter_term not in item]
         self.section = ''
         
-    def finalise_html(self):
+    async def finalise_html(self):
+        print(self.sectionList)
         for section in self.sectionList:
             if section == "Header":
-                self.finalHtml == self.finalHtml + navbar_html
+                print("header adding.....")
+                self.finalHtml = self.finalHtml + navbar_html
             elif section == "Carousel":
-                self.finalHtml == self.finalHtml + carousel
+                self.finalHtml = self.finalHtml + carousel
             elif section == "Hero Section":
-                self.finalHtml == self.finalHtml + hero_html
+                self.finalHtml = self.finalHtml + hero_html
             elif section == "Contact Us":
                 self.finalHtml = self.finalHtml + contact_us_html
             elif section == "Product Section":
@@ -193,6 +199,13 @@ class SectionPanelState(rx.State):
                 self.finalHtml = self.finalHtml + description_section
             else:
                 self.finalHtml = self.finalHtml + ""
+        arg = self.router.page.params
+        print(arg)
+        handle = await self.get_state(TextfieldControlled)
+        redirect_url =await publish_page(arg["store_name"],self.finalHtml,handle.text)
+        print(redirect_url,"<><><><><><><>")
+        return rx.redirect(redirect_url)
+
                 
 def list_item(section: str):
    return rx.match(
@@ -230,6 +243,8 @@ def dashboard() -> rx.Component:
                 ),
                 rx.text(SectionPanelState.section),
                 rx.button("Remove Section", on_click=lambda: SectionPanelState.filter_list(SectionPanelState.section)),
+                rx.flex(rx.input(placeholder="Enter your route here",value=TextfieldControlled.text,on_change=TextfieldControlled.set_text,size="3"),
+                rx.button("Publish", on_click=(lambda: SectionPanelState.finalise_html)),direction="column",class_name="gap-4 w-full mt-10"),
                 class_name="border-l h-screen p-4 w-[300px] flex flex-col"
                 ),
                 class_name="fixed right-0 top-0",
@@ -364,4 +379,5 @@ app.api.add_api_route("/signup", register, methods=["POST"])
 app.api.add_api_route("/login", login_user, methods=["POST"])
 app.api.add_api_route("/shopify-connect", connect, methods=["POST"])
 app.api.add_api_route("/shopify-connect", get_cookie_from_header, methods=["POST"])
+app.api.add_api_route("/dashboard", get_cookie_from_header, methods=["POST"])
 app.api.add_api_route("/shopify-connect", store_list, methods=["GET"])

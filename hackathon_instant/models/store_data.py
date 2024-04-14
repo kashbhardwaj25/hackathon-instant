@@ -119,7 +119,8 @@ async def fetch_all_products(store_name, user_id: str = Depends(get_current_user
     return products
 
 
-async def publish_page(store_name: str, user_id: str = Depends(get_current_user)):
+async def publish_page(store_name: str,body_html: str,handle:str):
+    print("<><><",store_name,body_html,handle)
     # Retrieve store data from the database
     store_data = await find_one_store(store_name)
     
@@ -127,8 +128,8 @@ async def publish_page(store_name: str, user_id: str = Depends(get_current_user)
         raise HTTPException(status_code=404, detail="Store not found or app not installed")
     
     # Check if the user has permission to access the store
-    if store_data.user_id != user_id:
-        raise HTTPException(status_code=403, detail="You do not have permission to access this store")
+    # if store_data.user_id != user_id:
+    #     raise HTTPException(status_code=403, detail="You do not have permission to access this store")
 
     # Setup Shopify session
     shopify.Session.setup(api_key=SHOPIFY_API_KEY, secret=SHOPIFY_API_SECRET)
@@ -144,18 +145,18 @@ async def publish_page(store_name: str, user_id: str = Depends(get_current_user)
     #     page = shopify.Page()
         
     page = shopify.Page()
-
-    page.title = "Amit Bishnoi Custom Page"
-    page.body_html = "<h2>Bhaiyon Publish Hogya</h2>\n<p>Revert in Slack Group If you want to congratulate us <strong>Within 15 minutes and this is strong tag of html</strong>.</p>"
-    page.handle = "amit-page"
+    page.title = "Craftify"
+    page.body_html = body_html
+    page.handle = handle
     success = page.save() 
 
     shopify.ShopifyResource.clear_session()
 
     if success:
+        print("data Url")
         page_url = f"https://{store_name}.myshopify.com/pages/{page.handle}"
         
-        return RedirectResponse(page_url)
+        return page_url
     else:
         raise HTTPException(status_code=500, detail="Failed to publish page")
 
