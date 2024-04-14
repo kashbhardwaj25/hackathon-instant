@@ -42,8 +42,8 @@ class StoreData(rx.Model, table=True):
      created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False))
      updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False, onupdate=datetime.now))
 
-async def install_shopify_app(shop_name: str, user_id: str = Depends(get_current_user)):
-    print(user_id)
+async def install_shopify_app(shop_name: str, token:str):
+    user_id = get_current_user(token)
     print(shop_name)
     if not shop_name:
         raise HTTPException(status_code=400, detail="Shop parameter is missing")
@@ -67,7 +67,7 @@ async def install_shopify_app(shop_name: str, user_id: str = Depends(get_current
     newSession = shopify.Session(shop_url, api_version)
     auth_url = newSession.create_permission_url(scopes, redirect_uri, state)
         
-    return RedirectResponse(auth_url)
+    return auth_url
 
 
 async def shopify_callback(code: str | None = None, shop: str | None = None, state: str | None = None, hmac: str | None = None, host: str | None = None, timestamp: int | None = None):
@@ -94,7 +94,7 @@ async def shopify_callback(code: str | None = None, shop: str | None = None, sta
     
     await update_store(store_name, is_app_install=True, access_token=access_token)
     
-    return RedirectResponse(FE_URL)
+    return RedirectResponse(f"{FE_URL}/dashboard/{store_name}")
 
 async def fetch_all_products(store_name, user_id: str = Depends(get_current_user)):
     store_data = await find_one_store(store_name)

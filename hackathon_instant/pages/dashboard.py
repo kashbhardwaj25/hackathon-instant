@@ -1,9 +1,11 @@
 """The dashboard page."""
 
+import requests.cookies
 from hackathon_instant.templates import template
 import reflex as rx
 import requests
 import http.cookies
+from fastapi import Cookie
 from ..components.template import template as template_to_render
 
 from hackathon_instant.components.landingPage.header import header
@@ -15,7 +17,10 @@ from hackathon_instant.components.landingPage.start import start
 from hackathon_instant.components.landingPage.footer import footer
 from ..models.user import signup as register
 from ..models.user import login as login_user
+from ..models.user import store_list 
+from ..models.store_data import install_shopify_app as connect
 from ..cookie import CookieState
+from ..models.cookie import get_cookie_from_header
 
 
 import reflex as rx
@@ -148,13 +153,9 @@ def list_item(section: str):
     )
 
 
-@template(route="/dashboard", title="Dashboard")
+@template(route="/dashboard/[store_name]", title="Dashboard")
 def dashboard() -> rx.Component:
-    """The dashboard page.
 
-    Returns:
-        The UI for the dashboard page.
-    """
     return rx.hstack(
         rx.box(
        rx.vstack(
@@ -185,7 +186,8 @@ class FormInputState(rx.State):
     form_data: dict = {
         "name":"",
         "username":"",
-        "password":""
+        "password":"",
+        "shopify_url":""
     }
     async def handle_signup(self, form_data: dict):
         self.form_data = form_data
@@ -193,7 +195,7 @@ class FormInputState(rx.State):
         response =await register(form_data["name"],form_data["username"],form_data["password"])
         print(response)
         if(response["status_code"]):
-            yield[CookieState.set_custom_cookie(response["access_token"]),rx.redirect("/dashboard")]
+            yield[CookieState.set_custom_cookie(response["access_token"]),rx.redirect("/shopify-connect")]
         else:
             print("error")
             return
@@ -204,7 +206,19 @@ class FormInputState(rx.State):
         response =await login_user(form_data["username"],form_data["password"])
         print(response)
         if(response["status_code"]):
-            yield[CookieState.set_custom_cookie(response["access_token"]),rx.redirect("/dashboard")]
+            yield[CookieState.set_custom_cookie(response["access_token"]),rx.redirect("/shopify-connect")]
+        else:
+            print("error")
+            return
+        
+    async def handle_store_connect(self, form_data: dict):
+        self.form_data = form_data
+        mycookie = await self.get_state(CookieState)
+        print("<><><><><><",mycookie.custom_cookie[0])
+        auth_url =await connect(form_data["shopify_url"],mycookie.custom_cookie[0])
+        print(auth_url)
+        if(auth_url):
+            return rx.redirect(auth_url)
         else:
             print("error")
             return
@@ -267,6 +281,27 @@ def landing_page() -> rx.Component:
               footer(),
         class_name="flex flex-col font-mono")
 
+@rx.page("/shopify-connect")
+def shopify_connect()-> rx.Component:
+    return rx.flex(
+        rx.text("Hi there, Welcome back", size="7", class_name="font-semibold"),
+        rx.form.root(
+        rx.flex(
+            rx.input(name="shopify_url",required=True, placeholder="Enter you Shopify URL", size="3", width="400px", height="50px", variant="soft", color_scheme="violet"),
+            direction="column",
+            class_name="gap-6 pb-8"
+        ),
+        rx.button("Connect",type="submit", size="4", color_scheme="violet", class_name="max-w-[400px] w-full"),on_submit=FormInputState.handle_store_connect,
+            reset_on_submit=True,class_name="max-w-[400px] w-full"),
+        direction="column",
+        justify="center",
+        class_name="w-screen h-screen gap-10 items-center"
+    )
+
+
 app = rx.App()
 app.api.add_api_route("/signup", register, methods=["POST"])
 app.api.add_api_route("/login", login_user, methods=["POST"])
+app.api.add_api_route("/shopify-connect", connect, methods=["POST"])
+app.api.add_api_route("/shopify-connect", get_cookie_from_header, methods=["POST"])
+app.api.add_api_route("/shopify-connect", store_list, methods=["GET"])
