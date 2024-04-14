@@ -22,6 +22,10 @@ class Signup(BaseModel):
     username: str
     password: str
 
+class Login(BaseModel):
+    username: str
+    password: str
+
 class User(rx.Model, table=True):
     id: str = Field(primary_key = True, default=None)
     username: str = Field(unique=True, nullable=False)
@@ -77,7 +81,8 @@ def get_current_user(request: Request):
     return user_id
 
 
-async def login(username: str, password: str):
+async def login(payload: Login, response: Response):
+    username, password = payload.username, payload.password
     user = await find_user(username)
     
     print(user)
@@ -85,13 +90,17 @@ async def login(username: str, password: str):
     if not user or user.password != password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
+    access_token = create_access_token(user.id)
     
-    # response.set_cookie(key="access_token", value=access_token, httponly=True, max_age=1800)  # Expires in 30 minutes
-    return {"access_token": access_token, "token_type": "bearer"}
+    response.set_cookie(
+            key="jwt_token", 
+            value=access_token,
+            max_age=3600,
+            httponly=True,
+            path='/'
+        )
+    
+    return {"message": "Logged in successfully", "access_token": access_token, "token_type": "bearer"}
     
     
 async def create_user(user_id: str, name: str, username: str, password: bool):
@@ -107,6 +116,9 @@ async def find_user(username: str):
         result = session.exec(User.select().where(User.username == username))
         user =  result.first()
         return user
+    
+async def protected_endpoint(user_id: str):
+    return {"message": "This is a protected endpoint", "user_id": user_id}
 
 
 
