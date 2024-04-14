@@ -27,7 +27,7 @@ from ..models.cookie import get_cookie_from_header
 import reflex as rx
 
 carousel="""
-<div style="overflow-x: auto; white-space: nowrap; padding: 20px; background-color: #f4f4f4; width: 1000px;">\n
+<div style="overflow-x: auto; white-space: nowrap; padding: 20px; background-color: #f4f4f4; width: 100%; padding-top:60px; padding-bottom:50px">\n
     <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">\n
         <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">\n
         <h3 style="color: #333;">Product 1</h3>\n
@@ -72,7 +72,7 @@ carousel="""
 """
 
 navbar_html = """
-<div style="width: 1000px; background-color: #333; overflow: hidden; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;">\n
+<div style="width: 100%; background-color: #333; overflow: hidden; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;">\n
   <div style="float: left; color: white; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px;">\n
     <b>SiteName</b>\n
   </div>\n
@@ -86,16 +86,16 @@ navbar_html = """
 """
 
 hero_html = """
-<div class="hero" style="width: 1000px; background-image: url('https://images.pexels.com/photos/2563597/pexels-photo-2563597.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); height: 100vh; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white;">\n
-  <h1>Welcome to Our World</h1>\n
-  <p>Explore the beauty of nature with us.</p>\n
-  <a href="#more" class="cta-button" style="padding: 12px 25px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Discover More</a>\n
+<div class="hero" style="width: 100%; background-image: url('https://images.pexels.com/photos/2563597/pexels-photo-2563597.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); height: 100vh; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white;">\n
+  <h1 style="font-size:48px; font-weight:bolder">Welcome to Our World</h1>\n
+  <p style="font-size:22px; font-weight:bold; margin-top:10px">Explore the beauty of nature with us</p>\n
+  <a href="#more" class="cta-button" style="padding: 12px 25px; margin-top:30px; background-color: #420D09; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Discover More</a>\n
 </div>\n
 """
 
 contact_us_html = """
-<div style="display: flex; align-items: center; justify-content: center; padding: 20px; width: 1000px;">\n
-  <div style="flex: 1; min-height: 300px; background-image: url('https://images.pexels.com/photos/2563597/pexels-photo-2563597.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); background-size: cover; background-position: center;"></div>\n
+<div style="display: flex; align-items: center; justify-content: center; padding: 80px; width: 100%; gap:80px">\n
+  <div style="flex: 1; min-height: 300px; background-image: url('https://images.pexels.com/photos/207456/pexels-photo-207456.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); background-size: cover; background-position: center;"></div>\n
   <div style="flex: 1; padding: 20px;">\n
     <form action="submit-your-form-handler" method="POST" style="display: flex; flex-direction: column; gap: 10px;">\n
       <label for="name" style="color: #333; font-weight: bold;">Name:</label>\n
@@ -107,15 +107,27 @@ contact_us_html = """
       <label for="message" style="color: #333; font-weight: bold;">Message:</label>\n
       <textarea id="message" name="message" rows="4" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;"></textarea>\n
 
-      <button type="submit" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Send</button>\n
+      <button type="submit" style="background-color: #420D09; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Send</button>\n
     </form>\n
   </div>\n
 </div>\n
 """
 
+product_section ="""
+<div style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f4;">
+    <div style="background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden; display: flex; max-width: 800px; width: 100%;">
+        <img src="https://images.pexels.com/photos/1002638/pexels-photo-1002638.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Ad Image" style="width: 50%; object-fit: cover;">
+        <div style="padding: 20px; width: 50%; display: flex; flex-direction: column; justify-content: center;">
+            <h2 style="color: #333; margin: 0 0 20px 0;">Discover Our New Collection</h2>
+            <p style="color: #555; margin: 0 0 20px 0;">Check out our latest range of products and take advantage of our limited-time offers now!</p>
+            <button style="padding: 10px 20px; background-color: #0044cc; color: white; border: none; border-radius: 5px; cursor: pointer;">Shop Now</button>
+        </div>
+    </div>
+</div>
+    """
+
 class TextfieldControlled(rx.State):
     text: str = ""
-
 
 class SectionPanelState(rx.State):
     section: str = ''
@@ -170,9 +182,9 @@ def list_item(section: str):
 @template(route="/dashboard/[store_name]", title="Dashboard")
 def dashboard() -> rx.Component:
 
-    return rx.hstack(
+    return rx.flex(
         rx.box(
-       rx.vstack(
+       rx.flex(
                 rx.heading("Sections", size="5", class_name="py-2"),
                 rx.flex(
                         rx.card("Header", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Header'),),
@@ -181,20 +193,22 @@ def dashboard() -> rx.Component:
                         rx.card("Contact Us", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Contact Us')),
                         spacing="2",
                         width="100%",
-                        direction="column"
+                        direction="column",
+                        class_name="mb-4"
                 ),
                 rx.text(SectionPanelState.section),
                 rx.button("Remove Section", on_click=lambda: SectionPanelState.filter_list(SectionPanelState.section)),
                 rx.flex(rx.input(placeholder="Enter your route here",value=TextfieldControlled.text,on_change=TextfieldControlled.set_text,size="3"),
                 rx.button("Publish", on_click=(lambda: SectionPanelState.finalise_html)),direction="column",class_name="gap-4 w-full mt-10"),
-                class_name="border-l h-screen p-4 w-[300px]"
+                class_name="border-l h-screen p-4 w-[300px] flex flex-col"
                 ),
                 class_name="fixed right-0 top-0",
     ),
-    rx.vstack(
+    rx.flex(
         rx.foreach(SectionPanelState.sectionList, list_item),
-        class_name="w-[90vh]"
-    )
+        class_name="w-[75vw] flex flex-col"
+    ),
+    class_name="flex flex-col"
     )
 
 
