@@ -1,7 +1,6 @@
 import os
 import uuid
 from fastapi import HTTPException, Request, Response
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 import jwt
 from sqlalchemy import Column, DateTime
@@ -81,6 +80,8 @@ def get_current_user(request: Request):
 async def login(username: str, password: str):
     user = await find_user(username)
     
+    print(user)
+    
     if not user or user.password != password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     
@@ -106,11 +107,6 @@ async def find_user(username: str):
         result = session.exec(User.select().where(User.username == username))
         user =  result.first()
         return user
-    
-async def set_cookie(response: Response):
-    print("Setting cookie...")
-    response.set_cookie(key="mycookie", value="the cookie value", httponly=True, max_age=1800)
-    print("Cookie should be set now.")
-    return {"message": "Cookie is set"}
+
 
 
