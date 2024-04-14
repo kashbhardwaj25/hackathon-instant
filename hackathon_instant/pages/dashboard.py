@@ -17,13 +17,95 @@ from ..models.user import signup as register
 from ..models.user import login as login_user
 from ..cookie import CookieState
 
-from hackathon_instant.components.navbar import navbar
-from hackathon_instant.components.crousel import crousel
-from hackathon_instant.components.feature_section import feature_section
-from hackathon_instant.components.contact_us import contact_us
-
 
 import reflex as rx
+
+carousel="""
+<div style="overflow-x: auto; white-space: nowrap; padding: 20px; background-color: #f4f4f4; width: 1000px;">
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 1</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 2</h3>
+        <p style="color: #555; font-size: 14px;">Name.</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 3</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 4</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 5</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 6</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 7</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+    <div style="display: inline-block; width: 200px; margin-right: 20px; background-color: white; text-align: center; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/8947774/pexels-photo-8947774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" style="width: 100%; border-radius: 5px;">
+        <h3 style="color: #333;">Product 8</h3>
+        <p style="color: #555; font-size: 14px;">Name</p>
+    </div>
+</div>
+"""
+
+navbar_html = """
+<div style="width: 1000px; background-color: #333; overflow: hidden; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;">
+  <div style="float: left; color: white; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px;">
+    <b>SiteName</b>
+  </div>
+  <div style="display: flex; float: right;">
+    <a href="#home" style="color: white; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px; display: block;">Home</a>
+    <a href="#services" style="color: white; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px; display: block;">Services</a>
+    <a href="#about" style="color: white; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px; display: block;">About</a>
+    <a href="#contact" style="color: white; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px; display: block;">Contact</a>
+  </div>
+</div>
+"""
+
+featured_html = """
+<div class="hero" style="width: 1000px; background-image: url('https://images.pexels.com/photos/2563597/pexels-photo-2563597.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); height: 100vh; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white;">
+  <h1>Welcome to Our World</h1>
+  <p>Explore the beauty of nature with us.</p>
+  <a href="#more" class="cta-button" style="padding: 12px 25px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Discover More</a>
+</div>
+"""
+
+contact_us_html = """
+<div style="display: flex; align-items: center; justify-content: center; padding: 20px; width: 1000px;">
+  <div style="flex: 1; min-height: 300px; background-image: url('https://images.pexels.com/photos/2563597/pexels-photo-2563597.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); background-size: cover; background-position: center;"></div>
+  <div style="flex: 1; padding: 20px;">
+    <form action="submit-your-form-handler" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
+      <label for="name" style="color: #333; font-weight: bold;">Name:</label>
+      <input type="text" id="name" name="name" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+
+      <label for="email" style="color: #333; font-weight: bold;">Email:</label>
+      <input type="email" id="email" name="email" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+
+      <label for="message" style="color: #333; font-weight: bold;">Message:</label>
+      <textarea id="message" name="message" rows="4" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;"></textarea>
+
+      <button type="submit" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Send</button>
+    </form>
+  </div>
+</div>
+"""
 
 class SectionPanelState(rx.State):
     section: str = ''
@@ -44,10 +126,10 @@ class SectionPanelState(rx.State):
 def list_item(section: str):
    return rx.match(
         section,
-        ("Header", navbar()),
-        ("Carousel", crousel()),
-        ("Featured Product", feature_section()),
-        ("Contact Us", contact_us()),
+        ("Header", rx.html(navbar_html)),
+        ("Carousel", rx.html(carousel)),
+        ("Featured Product", rx.html(featured_html)),
+        ("Contact Us", rx.html(contact_us_html)),
         # ("Footer", footer()),
         ("", rx.text("Section not found")),
     )
