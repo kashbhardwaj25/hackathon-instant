@@ -1,25 +1,13 @@
 import reflex as rx
 
+featured_html = """
+<div class="hero" style="width: 1000px; background-image: url('https://images.pexels.com/photos/2563597/pexels-photo-2563597.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); height: 100vh; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white;">
+  <h1>Welcome to Our World</h1>
+  <p>Explore the beauty of nature with us.</p>
+  <a href="#more" class="cta-button" style="padding: 12px 25px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Discover More</a>
+</div>
+"""
+
+
 def feature_section() -> rx.Component:
-    return rx.flex(
-        rx.box(class_name="w-[400px] border-t-2 border-[#1F1300] my-4 bg-[#001B2E]"),
-        rx.flex(
-            rx.flex(
-                rx.flex(
-                    rx.text("Get all Essentials you are looking for in a light package",size="9"),
-                    rx.text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",size="4",direction="column"),
-                    rx.button("Discover More",size="4",color_scheme="ruby"),
-                    direction="column",class_name="gap-8 max-w-[540px]"),
-                rx.box(
-                    rx.image(src={"https://img0.junaroad.com/uiproducts/19126280/zoom_0-1673529652.jpg"},width="380px",height="460px"),
-                    class_name={"h-[430px]"}
-                    ),
-                    justify="between",
-                    class_name={"gap-28 w-full items-center"}
-                ),
-                direction="column",
-                class_name="gap-20"),
-            direction="column",
-            justify="between",
-            class_name="gap-20 py-12 px-16 items-center"
-            )
+    return rx.html(featured_html)

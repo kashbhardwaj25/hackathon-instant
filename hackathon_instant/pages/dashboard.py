@@ -10,6 +10,12 @@ from hackathon_instant.components.landingPage.functions import functions
 from hackathon_instant.components.landingPage.start import start
 from hackathon_instant.components.landingPage.footer import footer
 
+from hackathon_instant.components.navbar import navbar
+from hackathon_instant.components.crousel import crousel
+from hackathon_instant.components.feature_section import feature_section
+from hackathon_instant.components.contact_us import contact_us
+
+
 import reflex as rx
 
 class SectionPanelState(rx.State):
@@ -29,7 +35,15 @@ class SectionPanelState(rx.State):
         self.section = ''
         
 def list_item(section: str):
-        return rx.box(rx.text(section))
+   return rx.match(
+        section,
+        ("Header", navbar()),
+        ("Carousel", crousel()),
+        ("Featured Product", feature_section()),
+        ("Contact Us", contact_us()),
+        # ("Footer", footer()),
+        ("", rx.text("Section not found")),
+    )
 
 
 @template(route="/dashboard", title="Dashboard")
@@ -46,9 +60,8 @@ def dashboard() -> rx.Component:
                 rx.flex(
                         rx.card("Header", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Header'),),
                         rx.card("Carousel", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Carousel')),
-                        rx.card("Featured Product", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Featured Product')),
+                        rx.card("Hero Section", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Featured Product')),
                         rx.card("Contact Us", class_name="cursor-pointer hover:transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Contact Us')),
-                        rx.card("Footer", class_name="cursor-pointer transition-all hover:bg-rose-50", on_click=lambda: SectionPanelState.set_section('Footer')),
                         spacing="2",
                         width="100%",
                         direction="column"
@@ -61,6 +74,7 @@ def dashboard() -> rx.Component:
     ),
     rx.vstack(
         rx.foreach(SectionPanelState.sectionList, list_item),
+        class_name="w-[90vh]"
     )
     )
 
