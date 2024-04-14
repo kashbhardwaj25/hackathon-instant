@@ -67,7 +67,8 @@ async def login(username: str,password: str):
     return {"message": "Logged in successfully", "access_token": access_token, "token_type": "bearer","status_code": 200}
 
 
-async def store_list(user_id: str = Depends(get_current_user)):
+async def store_list(token:str):
+    user_id = get_current_user(token)
     stores = await find_user_store(user_id)
     return stores
     
